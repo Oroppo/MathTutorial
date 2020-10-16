@@ -86,9 +86,10 @@ void Player::MovementUpdate()
 
 	if (m_hasPhysics)
 	{	
-		float speed = 100.f;
+		float speed = 1000.f;
 		vec3 vel = vec3(0.f, 0.f, 0.f);
-
+		vel.y = m_physBody->GetBody()->GetLinearVelocity().y;
+		
 		if (Input::GetKey(Key::Shift))
 		{
 			speed *= 7.f;
@@ -97,19 +98,37 @@ void Player::MovementUpdate()
 
 		if (Input::GetKey(Key::A))
 		{
-			vel = vel + vec3(-1.f, 0.f, 0.f);
+			vel.x -= speed;
 			m_facing = LEFT;
 			m_moving = true;
 		}
 
 		if (Input::GetKey(Key::D))
 		{
-			vel = vel + vec3(1.f, 0.f, 0.f);
+			vel.x += speed;
 			m_facing = RIGHT;
 			m_moving = true;
 		}
 
-		m_physBody->SetVelocity(vel * speed);
+		if(vel.y == 0)
+		{
+
+		if (Input::GetKeyDown(Key::W))
+		{
+			vel.y = 5000;
+			m_moving = true;
+
+		}
+
+		}
+		if (Input::GetKey(Key::S))
+		{
+			vel = vel + vec3(1.f, 0.f, 0.f);
+			m_moving = true;
+		}
+
+
+		m_physBody->SetVelocity(vel);
 
 	}
 	else

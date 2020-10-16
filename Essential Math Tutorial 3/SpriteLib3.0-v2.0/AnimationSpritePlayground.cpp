@@ -5,7 +5,7 @@ AnimationSpritePlayground::AnimationSpritePlayground(std::string name)
 	: Scene(name)
 {
 	//No gravity this is a top down scene
-	m_gravity = b2Vec2(0.f, -1000.f);
+	m_gravity = b2Vec2(0.f, -100.f);
 	m_physicsWorld->SetGravity(m_gravity);
 
 }
@@ -93,7 +93,7 @@ void AnimationSpritePlayground::InitScene(float windowWidth, float windowHeight)
 		ECS::GetComponent<Player>(entity).InitPlayer(fileName, animations, 20, 30, 
 			&ECS::GetComponent<Sprite>(entity), 
 			&ECS::GetComponent<AnimationController>(entity),
-			&ECS::GetComponent<Transform>(entity), false);
+			&ECS::GetComponent<Transform>(entity), true, &ECS::GetComponent<PhysicsBody>(entity));
 
 		auto& tempSpr = ECS::GetComponent<Sprite>(entity);
 		auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
@@ -104,7 +104,8 @@ void AnimationSpritePlayground::InitScene(float windowWidth, float windowHeight)
 		b2Body* tempBody;
 		b2BodyDef tempDef;
 		tempDef.type = b2_dynamicBody;
-		tempDef.position.Set(float32(0.f), float32(0.f));
+		tempDef.position.Set(float32(0.f), float32(30.f));
+
 
 		tempBody = m_physicsWorld->CreateBody(&tempDef);
 
@@ -122,6 +123,8 @@ void AnimationSpritePlayground::Update()
 	auto& player = ECS::GetComponent<Player>(MainEntities::MainPlayer());
 	Scene::AdjustScrollOffset();
 	player.Update();
+	std::cout << Timer::deltaTime << "\n";
+
 }
 
 void AnimationSpritePlayground::KeyboardHold()
