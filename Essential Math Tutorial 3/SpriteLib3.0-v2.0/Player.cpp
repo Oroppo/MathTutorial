@@ -82,21 +82,27 @@ void Player::Update()
 
 void Player::MovementUpdate()
 {
+	//Automatically sets Link as not moving
 	m_moving = false;
 
+	//If link has physics
 	if (m_hasPhysics)
 	{	
+		//Variable Declaration/Implementation
 		float acceleration = 300.f;
 		vec3 vel = vec3(0.f, 0.f, 0.f);
 		vel.y = m_physBody->GetBody()->GetLinearVelocity().y;
 		vel.x = m_physBody->GetBody()->GetLinearVelocity().x;
+
 		
+		//If A or D is pressed, start timer for input
 		if (Input::GetKeyDown(Key::A) || Input::GetKeyDown(Key::D))
 		{
 			startTime = Timer::currentClock;
 			
 		}
 
+		//If Else If statement to accelerate with the A key and deccelerate when letting go and facing the keys direction
 		if (Input::GetKey(Key::A))
 		{
 			
@@ -116,6 +122,7 @@ void Player::MovementUpdate()
 			}
 		}
 
+		//If Else If statement to accelerate with the D key and deccelerate when letting go and facing the keys direction
 		if (Input::GetKey(Key::D))
 		{
 			
@@ -135,6 +142,7 @@ void Player::MovementUpdate()
 			}
 		}
 
+		//Nested If statements to check if the Link is already jumping, and if not to allow Link to jump
 		if(vel.y == 0)
 		{
 
@@ -147,12 +155,9 @@ void Player::MovementUpdate()
 		}
 
 		}
-		if (Input::GetKey(Key::S))
-		{
-			vel = vel + vec3(1.f, 0.f, 0.f);
-			m_moving = true;
-		}
 
+
+		//If else if to limit the maximum speed Link can reach when moving facing LEFT or RIGHT
 		if (fabsf(vel.x) >= 120)
 		{
 			if (m_facing == LEFT)
@@ -170,7 +175,7 @@ void Player::MovementUpdate()
 		}
 
 
-
+		//Timer for calculating movement per time frame
 		float DeltaTime = Timer::currentClock - startTime;
 	
 		std::cout << DeltaTime << "speed x: " << fabsf(vel.x) << "\n";
