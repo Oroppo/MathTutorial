@@ -155,7 +155,7 @@ void AnimationSpritePlayground::InitScene(float windowWidth, float windowHeight)
 		//Sets up components
 		std::string fileName = "LavaBad.png";
 		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 100, 35);
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 0.f, 0.f));
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 0.f, -1.f));
 
 		auto& tempSpr = ECS::GetComponent<Sprite>(entity);
 		auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
@@ -212,6 +212,8 @@ void AnimationSpritePlayground::InitScene(float windowWidth, float windowHeight)
 		//we don't want link rolling around like a potato bug, as hilarious as it is.
 		ECS::GetComponent<PhysicsBody>(MainEntities::MainPlayer()).GetBody()->SetFixedRotation(true);
 
+		unsigned int  position = ECS::GetComponent<Transform>(MainEntities::MainPlayer()).GetPositionX();
+	
 
 	}
 
@@ -230,21 +232,22 @@ void AnimationSpritePlayground::Update()
 	std::cout << position << "\n";
 
 	//Win Condition
-	if (position >= 350 && position<=600) {
+	if (position >= 350 && position<=600) 
+	{
 		std::cout << "--------------------You Won!--------------------";
-
 		exit(0);
 	}
-
+		
 	//lose Condition
 	unsigned int  positiony = ECS::GetComponent<Transform>(MainEntities::MainPlayer()).GetPositionY();
-
 	if (positiony == 4294967154)
 	{
 		std::cout << "--------------------You Lost!--------------------";
-
 		exit(0);
 	}
+
+
+
 }
 
 

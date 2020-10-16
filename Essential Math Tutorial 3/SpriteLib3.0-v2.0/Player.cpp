@@ -173,7 +173,8 @@ void Player::MovementUpdate()
 
 		float DeltaTime = Timer::currentClock - startTime;
 	
-		std::cout << DeltaTime << "speed x: " << fabsf(vel.x) << "m/s\n";
+		std::cout << DeltaTime << "speed x: " << fabsf(vel.x) << "\n";
+		
 		m_physBody->SetVelocity(vel);
 
 	}
