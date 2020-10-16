@@ -5,7 +5,7 @@ AnimationSpritePlayground::AnimationSpritePlayground(std::string name)
 	: Scene(name)
 {
 	//No gravity this is a top down scene
-	m_gravity = b2Vec2(0.f, -100.f);
+	m_gravity = b2Vec2(0.f, -175.f);
 	m_physicsWorld->SetGravity(m_gravity);
 
 }
@@ -107,12 +107,18 @@ void AnimationSpritePlayground::InitScene(float windowWidth, float windowHeight)
 		tempDef.position.Set(float32(0.f), float32(30.f));
 
 
+
+
+
 		tempBody = m_physicsWorld->CreateBody(&tempDef);
 
 		tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false);
+		tempPhsBody.GetBody()->GetFixtureList()->SetFriction(0);
 
 		ECS::GetComponent<PhysicsBody>(MainEntities::MainPlayer()).GetBody()->SetFixedRotation(true);
 	}
+
+	
 
 	ECS::GetComponent<HorizontalScroll>(MainEntities::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(MainEntities::MainPlayer()));
 	ECS::GetComponent<VerticalScroll>(MainEntities::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(MainEntities::MainPlayer()));
@@ -122,8 +128,16 @@ void AnimationSpritePlayground::Update()
 {
 	auto& player = ECS::GetComponent<Player>(MainEntities::MainPlayer());
 	Scene::AdjustScrollOffset();
+	vec3 vel = vec3(0.f, 0.f, 0.f);
 	player.Update();
-	std::cout << Timer::deltaTime << "\n";
+	
+	unsigned int  position = ECS::GetComponent<Transform>(MainEntities::MainPlayer()).GetPositionX();
+	std::cout << position << "\n";
+	if (position >= 400 && position <= 600) {
+		std::cout << "--------------------You Won!--------------------";
+
+		exit(0);
+	}
 
 }
 

@@ -86,28 +86,53 @@ void Player::MovementUpdate()
 
 	if (m_hasPhysics)
 	{	
-		float speed = 1000.f;
+		float acceleration = 300.f;
 		vec3 vel = vec3(0.f, 0.f, 0.f);
 		vel.y = m_physBody->GetBody()->GetLinearVelocity().y;
+		vel.x = m_physBody->GetBody()->GetLinearVelocity().x;
 		
-		if (Input::GetKey(Key::Shift))
+		if (Input::GetKeyDown(Key::A) || Input::GetKeyDown(Key::D))
 		{
-			speed *= 7.f;
+			startTime = Timer::currentClock;
+			
 		}
-
 
 		if (Input::GetKey(Key::A))
 		{
-			vel.x -= speed;
+			
+			vel.x -= acceleration * Timer::deltaTime;
 			m_facing = LEFT;
 			m_moving = true;
+			
+		}
+		else if (m_facing == LEFT && vel.x < 0)
+		{
+
+			vel.x += acceleration * Timer::deltaTime;
+
+			if (vel.x >= 0)
+			{
+				vel.x = 0;
+			}
 		}
 
 		if (Input::GetKey(Key::D))
 		{
-			vel.x += speed;
+			
+			vel.x += acceleration * Timer::deltaTime;
 			m_facing = RIGHT;
 			m_moving = true;
+
+		}
+		else if (m_facing == RIGHT && vel.x > 0)
+		{
+
+			vel.x -= acceleration * Timer::deltaTime;
+
+			if (vel.x <= 0)
+			{
+				vel.x = 0;
+			}
 		}
 
 		if(vel.y == 0)
@@ -117,6 +142,7 @@ void Player::MovementUpdate()
 		{
 			vel.y = 5000;
 			m_moving = true;
+			startTime = Timer::currentClock;
 
 		}
 
@@ -127,7 +153,27 @@ void Player::MovementUpdate()
 			m_moving = true;
 		}
 
+		if (fabsf(vel.x) >= 120)
+		{
+			if (m_facing == LEFT)
+			{
 
+				vel.x = -120;
+
+			}
+			else if (m_facing == RIGHT)
+			{
+
+				vel.x = 120;
+
+			}
+		}
+
+
+
+		float DeltaTime = Timer::currentClock - startTime;
+	
+		std::cout << DeltaTime << "speed x: " << fabsf(vel.x) << "m/s\n";
 		m_physBody->SetVelocity(vel);
 
 	}
@@ -152,9 +198,10 @@ void Player::MovementUpdate()
 
 	if (Input::GetKeyDown(Key::Space))
 	{
+		vec3 vel = vec3(0.f, 0.f, 0.f);
+		vel.y = m_physBody->GetBody()->GetLinearVelocity().y;
 		m_moving = false;
-
-		if (m_hasPhysics)
+		if (m_hasPhysics && vel.y == 0)
 		{
 			m_physBody->SetVelocity(vec3());
 		}

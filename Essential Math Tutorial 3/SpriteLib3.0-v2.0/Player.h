@@ -92,6 +92,8 @@ private:
 	//A reference to our player transform
 	Transform* m_transform = nullptr;
 
+	float startTime = 0;
+
 	//Physics importance
 	//A reference to our physics body
 	PhysicsBody* m_physBody = nullptr;
