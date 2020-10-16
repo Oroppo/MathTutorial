@@ -4,7 +4,7 @@
 AnimationSpritePlayground::AnimationSpritePlayground(std::string name)
 	: Scene(name)
 {
-	//No gravity this is a top down scene
+	//Gravity initialization
 	m_gravity = b2Vec2(0.f, -200.f);
 	m_physicsWorld->SetGravity(m_gravity);
 
@@ -42,6 +42,8 @@ void AnimationSpritePlayground::InitScene(float windowWidth, float windowHeight)
 	}
 
 	//Setup Floor
+	//this for loop, prints the entity multiple times, at a consistant varied location
+	//i= y value location 
 	for (float i = -508; i <= 889; i = i + 127) {
 
 		//Creates entity
@@ -85,7 +87,7 @@ void AnimationSpritePlayground::InitScene(float windowWidth, float windowHeight)
 		//Sets up components
 		std::string fileName = "EndFlag.png";
 		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 100, 400);
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 0.f, 3.f));
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 0.f, -1.f));
 
 		auto& tempSpr = ECS::GetComponent<Sprite>(entity);
 		auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
@@ -96,13 +98,14 @@ void AnimationSpritePlayground::InitScene(float windowWidth, float windowHeight)
 		b2Body* tempBody;
 		b2BodyDef tempDef;
 		tempDef.type = b2_staticBody;
-		tempDef.position.Set(float32(350.f), float32(0.f));
+		tempDef.position.Set(float32(320.f), float32(-30.f));
 
 		tempBody = m_physicsWorld->CreateBody(&tempDef);
 
 		tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight() - shrinkY), vec2(10000.f, 0.f), false);
 	}
 	//Setup BasicBlock
+	//Both X and Y values for BasicBlocks are procedurally setup
 	int j = -200;
 		for (float i = -508; i <= 889; i = i + 127) {
 
@@ -137,6 +140,7 @@ void AnimationSpritePlayground::InitScene(float windowWidth, float windowHeight)
 			j=j+20;
 	}
 	//Setup LavaBad
+		//also procedural generation
 	for (float i = -444.5; i <= 889; i = i + 63.5) {
 		
 
@@ -199,13 +203,13 @@ void AnimationSpritePlayground::InitScene(float windowWidth, float windowHeight)
 		b2Body* tempBody;
 		b2BodyDef tempDef;
 		tempDef.type = b2_dynamicBody;
-		tempDef.position.Set(float32(0.f), float32(30.f));
+		tempDef.position.Set(float32(-250.f), float32(-90.f));
 
 
 		tempBody = m_physicsWorld->CreateBody(&tempDef);
 
 		tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false);
-
+		//we don't want link rolling around like a potato bug, as hilarious as it is.
 		ECS::GetComponent<PhysicsBody>(MainEntities::MainPlayer()).GetBody()->SetFixedRotation(true);
 
 
@@ -215,7 +219,7 @@ void AnimationSpritePlayground::InitScene(float windowWidth, float windowHeight)
 	ECS::GetComponent<VerticalScroll>(MainEntities::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(MainEntities::MainPlayer()));
 }
 
-
+//for functions that must be updated constantly
 void AnimationSpritePlayground::Update()
 {
 	auto& player = ECS::GetComponent<Player>(MainEntities::MainPlayer());
@@ -224,8 +228,20 @@ void AnimationSpritePlayground::Update()
 	
 	unsigned int  position = ECS::GetComponent<Transform>(MainEntities::MainPlayer()).GetPositionX();
 	std::cout << position << "\n";
-	if (position >= 400 && position<=600) {
+
+	//Win Condition
+	if (position >= 350 && position<=600) {
 		std::cout << "--------------------You Won!--------------------";
+
+		exit(0);
+	}
+
+	//lose Condition
+	unsigned int  positiony = ECS::GetComponent<Transform>(MainEntities::MainPlayer()).GetPositionY();
+
+	if (positiony == 4294967154)
+	{
+		std::cout << "--------------------You Lost!--------------------";
 
 		exit(0);
 	}
